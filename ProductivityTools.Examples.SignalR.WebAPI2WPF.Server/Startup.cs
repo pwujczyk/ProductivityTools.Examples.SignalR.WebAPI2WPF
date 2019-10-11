@@ -26,6 +26,7 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +44,12 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Server
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseSignalR(route =>
+                {
+                    route.MapHub<ExampleHub>("/Example");
+                }
+            );
         }
     }
 }
