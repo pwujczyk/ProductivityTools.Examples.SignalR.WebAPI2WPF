@@ -23,54 +23,40 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
     public partial class MainWindow : Window
     {
         HubConnection connection;
+        private const string URL= "http://localhost:51180/ExampleHub/";
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void connect(string uri)
+        private void Connect(string uri)
         {
-
             try
             {
-
-
-                connection = new HubConnectionBuilder()
-                    .WithUrl(uri)
-                    .Build();
-
+                connection = new HubConnectionBuilder().WithUrl(uri).Build();
                 connection.On<string>("Send", update =>
                 {
                     this.Dispatcher.Invoke(() => lblContent.Content = update);
                 });
-
-
                 connection.StartAsync();
-                // HubProxy = Connection.CreateHubProxy("ExampleHub");
-                // HubProxy.On<string>("Send", (text) => this.Dispatcher.Invoke(() => lblContent.Content = text));
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            connect("http://localhost:51180/ExampleHub/");
-            //connect("http://localhost:51180/ExampleHub/singnalr");
-            //connect("http://localhost:51180/singnalr");
-            //connect("http://localhost:51180/");
+            Connect(URL);
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            connection.SendAsync("Send", "Dfa");
-            //connection.SendAsync("sent", "Dfa");
-            connection.InvokeAsync("Send", "Fdsa");
-            connection.InvokeCoreAsync("Send", new object[] { "fdsA" });
+            connection.SendAsync("Send", "SendAsync");
+            connection.InvokeAsync("Send", "InvokeAsync");
+            connection.InvokeCoreAsync("Send", new object[] { "InvokeCoreAsync" });
         }
     }
 }
