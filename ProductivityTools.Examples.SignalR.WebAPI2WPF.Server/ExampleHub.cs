@@ -10,7 +10,7 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Server
     {
         public void Send(string text)
         {
-            Clients.All.SendAsync("sent", text);
+            Clients.All.SendAsync("Send", text);
         }
 
         public override Task OnConnectedAsync()

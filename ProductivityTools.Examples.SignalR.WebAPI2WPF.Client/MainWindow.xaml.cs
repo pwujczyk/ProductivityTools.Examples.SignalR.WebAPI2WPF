@@ -40,7 +40,7 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
                     .WithUrl(uri)
                     .Build();
 
-                connection.On<string>("sent", update =>
+                connection.On<string>("Send", update =>
                 {
                     this.Dispatcher.Invoke(() => lblContent.Content = update);
                 });
@@ -67,12 +67,10 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-            connection.SendAsync("Sent","Dfa");
-            connection.SendAsync("sent", "Dfa");
-            connection.InvokeAsync("sent", "Fdsa");
-            connection.InvokeAsync("Sent", "Fdsa");
-            connection.InvokeCoreAsync("sent", new object[] { "fdsA" });
-            connection.InvokeCoreAsync("Sent", new object[] { "fdsA" });
+            connection.SendAsync("Send", "Dfa");
+            //connection.SendAsync("sent", "Dfa");
+            connection.InvokeAsync("Send", "Fdsa");
+            connection.InvokeCoreAsync("Send", new object[] { "fdsA" });
         }
     }
 }
