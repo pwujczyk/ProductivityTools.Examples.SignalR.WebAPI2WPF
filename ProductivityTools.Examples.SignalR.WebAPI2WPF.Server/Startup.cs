@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -39,17 +40,17 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Server
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCors();
+            app.UseSignalR(route =>
+            {
+                route.MapHub<ExampleHub>("/ExampleHub");
+            });
             app.UseMvc();
 
-            app.UseSignalR(route =>
-                {
-                    route.MapHub<ExampleHub>("/Example");
-                }
-            );
+          
         }
     }
 }
