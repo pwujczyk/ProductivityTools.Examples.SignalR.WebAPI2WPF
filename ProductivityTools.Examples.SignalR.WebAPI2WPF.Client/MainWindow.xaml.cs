@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
 {
     /// <summary>
@@ -21,9 +22,7 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        public IHubProxy HubProxy { get; set; }
-        const string ServerURI = "https://localhost:44358/";
-        public HubConnection Connection { get; set; }
+        HubConnection connection;
 
         public MainWindow()
         {
@@ -32,31 +31,48 @@ namespace ProductivityTools.Examples.SignalR.WebAPI2WPF.Client
 
         private void connect(string uri)
         {
-            Connection = new HubConnection(uri);
-           // HubProxy = Connection.CreateHubProxy("ExampleHub");
-           // HubProxy.On<string>("Send", (text) => this.Dispatcher.Invoke(() => lblContent.Content = text));
 
             try
             {
-                Connection.Start().Wait();
+
+
+                connection = new HubConnectionBuilder()
+                    .WithUrl(uri)
+                    .Build();
+
+                connection.On<string>("sent", update =>
+                {
+                    this.Dispatcher.Invoke(() => lblContent.Content = update);
+                });
+
+
+                connection.StartAsync();
+                // HubProxy = Connection.CreateHubProxy("ExampleHub");
+                // HubProxy.On<string>("Send", (text) => this.Dispatcher.Invoke(() => lblContent.Content = text));
             }
             catch (Exception ex)
             {
-                return;
+
+                throw;
             }
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
             connect("http://localhost:51180/ExampleHub/");
-            connect("http://localhost:51180/ExampleHub/singnalr");
-            connect("http://localhost:51180/singnalr");
-            connect("http://localhost:51180/");
+            //connect("http://localhost:51180/ExampleHub/singnalr");
+            //connect("http://localhost:51180/singnalr");
+            //connect("http://localhost:51180/");
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
         {
-
+            connection.SendAsync("Sent","Dfa");
+            connection.SendAsync("sent", "Dfa");
+            connection.InvokeAsync("sent", "Fdsa");
+            connection.InvokeAsync("Sent", "Fdsa");
+            connection.InvokeCoreAsync("sent", new object[] { "fdsA" });
+            connection.InvokeCoreAsync("Sent", new object[] { "fdsA" });
         }
     }
 }
